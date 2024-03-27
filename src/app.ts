@@ -1,23 +1,15 @@
-import express from 'express'
-import rateLimit from 'express-rate-limit'
-import morgan from 'morgan'
 
-const app = express()
-const port = 3000
-app.use(morgan('dev'))
+import express from 'express';
+import routes from './routes';
+import { configureMiddlewares } from './middlewares';
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
-  max: 3, 
-  message: 'Demasiadas solicitudes desde esta IP, por favor inténtalo de nuevo más tarde.'
-});
+const app = express();
+const port = 3000;
 
-app.use('/api', limiter);
+configureMiddlewares(app);
 
-app.get('/api/test', (req, res) => {
-  res.send('Ruta limitada. Bienvenido!');
-})
+app.use(routes);
 
 app.listen(port, () => {
-  console.log(`Escuchando puerto ${port}`)
-})
+    console.log(`Listening on port ${port}`);
+});
